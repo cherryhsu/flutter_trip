@@ -1,5 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:fluttertripstudy/dao/home_dao.dart';
+import 'package:fluttertripstudy/model/common_model.dart';
+import 'package:fluttertripstudy/model/home_model.dart';
+import 'package:fluttertripstudy/widget/grid_nav.dart';
+import 'package:fluttertripstudy/widget/local_nav.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
 
@@ -20,62 +27,73 @@ class _HomePageState extends State<HomePage> {
     initialPage: 0, //初始状态下显示第0个tab
   );
   double appBarAlpha = 0;
+  String resultString = "";
+  List<CommonModel> LocalNavList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff2f2f2),
         body: Stack(
-      children: <Widget>[
-        MediaQuery.removePadding(
-            removeTop: true, //移除顶部padding
-            context: context,
-            child: NotificationListener(
-              //监听列表
-              onNotification: (scrollNotification) {
-                if (scrollNotification is ScrollUpdateNotification &&
-                    scrollNotification.depth == 0) {
-                  //滚动且是列表滚动的时候,第0个元素 即 ListView
-                  _onScroll(scrollNotification.metrics.pixels);
-                }
-              },
-              child: ListView(
-                children: <Widget>[
-                  Container(
-                    height: 160,
-                    child: Swiper(
-                      itemCount: _imgUrls.length,
-                      autoplay: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Image.network(
-                          _imgUrls[index],
-                          fit: BoxFit.fill,
-                        );
-                      },
-                      pagination: SwiperPagination(),
-                    ),
+          children: <Widget>[
+            MediaQuery.removePadding(
+                removeTop: true, //移除顶部padding
+                context: context,
+                child: NotificationListener(
+                  //监听列表
+                  onNotification: (scrollNotification) {
+                    if (scrollNotification is ScrollUpdateNotification &&
+                        scrollNotification.depth == 0) {
+                      //滚动且是列表滚动的时候,第0个元素 即 ListView
+                      _onScroll(scrollNotification.metrics.pixels);
+                    }
+                  },
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        height: 160,
+                        child: Swiper(
+                          itemCount: _imgUrls.length,
+                          autoplay: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Image.network(
+                              _imgUrls[index],
+                              fit: BoxFit.fill,
+                            );
+                          },
+                          pagination: SwiperPagination(),
+                        ),
+                      ),
+                     Padding(padding: EdgeInsets.fromLTRB(7, 4, 7, 4),child: LocalNav(localNavList: LocalNavList,),),
+
+                      Container(
+                        height: 800,
+                        child: ListTile(title: Text(resultString)),
+                      )
+                    ],
                   ),
-                  Container(
-                    height: 800,
-                    child: ListTile(title: Text('哈哈')),
-                  )
-                ],
+                )),
+            Opacity(
+              opacity: appBarAlpha,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text('首页'),
+                  ),
+                ),
               ),
-            )),
-        Opacity(
-          opacity: appBarAlpha,
-          child: Container(
-            height: 80,
-            decoration: BoxDecoration(color: Colors.white),
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 20),
-                child: Text('首页'),
-              ),
-            ),
-          ),
-        )
-      ],
-    ));
+            )
+          ],
+        ));
   }
 
   _onScroll(offset) {
@@ -88,6 +106,29 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       appBarAlpha = alpha;
     });
-    print(appBarAlpha);
+    // print(appBarAlpha);
   }
+
+  _loadData() async {
+    try {
+      HomeModel model = await HomeDao.fetch();
+      setState(() {
+        LocalNavList = model.localNavList;
+        resultString = json.encode(model.config);
+      });
+    } catch (e) {
+      setState(() {
+        print(e);
+      });
+    }
+  }
+//  _loadData() {
+//    HomeDao.fetch()
+//        .then((res) => setState(() {
+//              resultString = json.encode(res);
+//            }))
+//        .catchError((e) => setState(() {
+//              resultString = e.toString();
+//            }));
+//  }
 }
