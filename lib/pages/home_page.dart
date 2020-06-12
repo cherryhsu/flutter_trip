@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttertripstudy/dao/home_dao.dart';
 import 'package:fluttertripstudy/model/common_model.dart';
+import 'package:fluttertripstudy/model/grid_nav_model.dart';
 import 'package:fluttertripstudy/model/home_model.dart';
 import 'package:fluttertripstudy/widget/grid_nav.dart';
 import 'package:fluttertripstudy/widget/local_nav.dart';
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   double appBarAlpha = 0;
   String resultString = "";
   List<CommonModel> LocalNavList = [];
+  GridNavModel gridNavModel;
 
   @override
   void initState() {
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff2f2f2),
+        backgroundColor: Color(0xfff2f2f2),
         body: Stack(
           children: <Widget>[
             MediaQuery.removePadding(
@@ -70,8 +72,15 @@ class _HomePageState extends State<HomePage> {
                           pagination: SwiperPagination(),
                         ),
                       ),
-                     Padding(padding: EdgeInsets.fromLTRB(7, 4, 7, 4),child: LocalNav(localNavList: LocalNavList,),),
-
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                        child: LocalNav(
+                          localNavList: LocalNavList,
+                        ),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: GridNav(gridNavModel: gridNavModel)),
                       Container(
                         height: 800,
                         child: ListTile(title: Text(resultString)),
@@ -114,6 +123,7 @@ class _HomePageState extends State<HomePage> {
       HomeModel model = await HomeDao.fetch();
       setState(() {
         LocalNavList = model.localNavList;
+        gridNavModel = model.gridNav;
         resultString = json.encode(model.config);
       });
     } catch (e) {
