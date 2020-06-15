@@ -6,8 +6,11 @@ import 'package:fluttertripstudy/dao/home_dao.dart';
 import 'package:fluttertripstudy/model/common_model.dart';
 import 'package:fluttertripstudy/model/grid_nav_model.dart';
 import 'package:fluttertripstudy/model/home_model.dart';
+import 'package:fluttertripstudy/model/sales_box_model.dart';
 import 'package:fluttertripstudy/widget/grid_nav.dart';
 import 'package:fluttertripstudy/widget/local_nav.dart';
+import 'package:fluttertripstudy/widget/sales_box.dart';
+import 'package:fluttertripstudy/widget/sub_nav.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
 
@@ -30,6 +33,8 @@ class _HomePageState extends State<HomePage> {
   double appBarAlpha = 0;
   String resultString = "";
   List<CommonModel> LocalNavList = [];
+  List<CommonModel> subNavList = [];
+  SalesBoxModel salesBoxModel;
   GridNavModel gridNavModel;
 
   @override
@@ -81,6 +86,12 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                           padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
                           child: GridNav(gridNavModel: gridNavModel)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: SubNav(subNavList: subNavList)),
+                      Padding(
+                          padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                          child: SalesBox(salesBox: salesBoxModel)),
                       Container(
                         height: 800,
                         child: ListTile(title: Text(resultString)),
@@ -123,6 +134,8 @@ class _HomePageState extends State<HomePage> {
       HomeModel model = await HomeDao.fetch();
       setState(() {
         LocalNavList = model.localNavList;
+        subNavList = model.subNavList;
+        salesBoxModel=model.salesBox;
         gridNavModel = model.gridNav;
         resultString = json.encode(model.config);
       });
