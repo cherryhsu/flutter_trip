@@ -7,6 +7,7 @@ import 'package:fluttertripstudy/model/common_model.dart';
 import 'package:fluttertripstudy/model/grid_nav_model.dart';
 import 'package:fluttertripstudy/model/home_model.dart';
 import 'package:fluttertripstudy/model/sales_box_model.dart';
+import 'package:fluttertripstudy/pages/search_page.dart';
 import 'package:fluttertripstudy/widget/grid_nav.dart';
 import 'package:fluttertripstudy/widget/loading_container.dart';
 import 'package:fluttertripstudy/widget/local_nav.dart';
@@ -157,7 +158,13 @@ class _HomePageState extends State<HomePage> {
 //    );
   }
 
-  _jumpToSearch() {}
+  _jumpToSearch() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return SearchPage(
+        hint: SEARCH_BAR_DEFAULT_TEXT,
+      );
+    }));
+  }
 
   _jumpToSpeak() {}
 
