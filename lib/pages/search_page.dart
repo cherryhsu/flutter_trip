@@ -182,13 +182,21 @@ class _SearchPageState extends State<SearchPage> {
     List<TextSpan> spans = [];
     spans.addAll(_keyWordSpans(item.word, searchModel.keyword));
     spans.add(TextSpan(
-        text: ' ' + (item.districtname ?? '') + ' ' + item.zonename ?? '',
-        style: TextStyle(fontSize: 16,color: Colors.grey)));
+        text: ' ' + (item.districtname ?? '') + ' ' + (item.zonename ?? ''),
+        style: TextStyle(fontSize: 16, color: Colors.grey)));
     return RichText(text: TextSpan(children: spans));
   }
 
   _subTitle(SearchItem item) {
-    return null;
+    return RichText(
+        text: TextSpan(children: <TextSpan>[
+      TextSpan(
+          text: item.price ?? '',
+          style: TextStyle(fontSize: 16, color: Colors.orange)),
+      TextSpan(
+          text: '' + (item.star ?? ''),
+          style: TextStyle(fontSize: 12, color: Colors.grey))
+    ]));
   }
 
   _keyWordSpans(String word, String keyword) {
