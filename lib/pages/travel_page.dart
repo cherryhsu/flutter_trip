@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertripstudy/dao/travel_tab_dao.dart';
 import 'package:fluttertripstudy/model/travel_tab_model.dart';
+import 'package:fluttertripstudy/pages/travel_tab_page.dart';
 
 class TravelPage extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _TravelPageState extends State<TravelPage>
                 child: TabBarView(
                     controller: _controller,
                     children: tabs.map((TravelTab tab) {
-                      return Text(tab.groupChannelCode);
+                      return TravelTabPage(travelUrl: travelTabModel.url,groupChannelCode: tab.groupChannelCode,);
                     }).toList()))
           ],
         ));
